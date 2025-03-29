@@ -9,13 +9,14 @@ from entry_result import EntryResult
 
 class Node:
     def __init__(self,
-                 order: int,
+                 order: int, parent = None,
                  is_root: bool = False, is_leaf: bool = True,
                  key: list[KeyEntry] = list(), children: list = list()):
         self._order: int = order
 
         self.is_root: bool = is_root
         self.is_leaf: bool = is_leaf
+        self.parent: Node = parent
 
         self._keys: list[KeyEntry] = key
         self._children: list = children

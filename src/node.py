@@ -15,5 +15,3 @@ class Node:
         
         self._key: list[KeyEntry] = key
         self._children: list = children
-
-    

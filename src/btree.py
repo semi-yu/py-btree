@@ -58,10 +58,14 @@ class BTree:
                               is_root = False, is_leaf = target.is_leaf,
                               key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
 
-            new_root._children = [left_node, right_node]
-
             for child in left_node.children: child.parent = left_node
             for child in right_node.children: child.parent = right_node
+
+            parent, index = new_root.search(mid_key.key)
+
+            parent._keys.insert(index, mid_key)
+            parent._children.insert(index, right_node)
+            parent._children.insert(index, left_node)
 
             self.root = new_root
         else:
@@ -76,12 +80,12 @@ class BTree:
             for child in right_node.children: child.parent = right_node
             
             parent, index = target.parent.search(mid_key.key)
+            parent._children.pop(index)
 
             parent._keys.insert(index, mid_key)
             parent._children.insert(index, right_node)
             parent._children.insert(index, left_node)
-            parent._children.pop()
-            
+
             if parent.is_overflow():
                 self.split(parent)
     

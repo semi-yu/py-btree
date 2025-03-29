@@ -49,7 +49,7 @@ class BTree:
         if target.is_root:
             new_root = Node(order = self.order, parent = None,
                             is_root = True, is_leaf = False,
-                            key = [mid_key], children = [])
+                            key = [], children = [])
 
             left_node = Node(order = self.order, parent = new_root,
                              is_root = False, is_leaf = target.is_leaf,

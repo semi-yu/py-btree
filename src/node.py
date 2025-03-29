@@ -6,16 +6,12 @@ from bisect import bisect_left, bisect_right
 from key_entry import KeyEntry
 from entry_result import EntryResult
 
-n_node = 0
-
 
 class Node:
     def __init__(self,
                  order: int,
                  is_root: bool = False, is_leaf: bool = True,
                  key: list[KeyEntry] = list(), children: list = list()):
-        global n_node
-
         self._order: int = order
 
         self.is_root: bool = is_root
@@ -23,9 +19,6 @@ class Node:
 
         self._keys: list[KeyEntry] = key
         self._children: list = children
-
-        self.n_node = n_node
-        n_node += 1
 
     def __len__(self):
         return len(self.keys)

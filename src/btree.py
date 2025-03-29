@@ -23,7 +23,6 @@ class BTree:
         return traverse(self.root)
 
     def search(self, key: int, exact: bool = False):
-        parent = None
         current = self.root
 
         while not current.is_leaf:
@@ -32,51 +31,70 @@ class BTree:
             if index < len(current) and current.keys[index].key == key:
                 return EntryResult(True, current, index)
 
-            parent = current
             current = current.children[index]
 
-        return parent, current.search(key, exact)
+        return current.search(key, exact)
     
     def insert(self, entry: KeyEntry):
-        parent, result = self.search(entry.key)
-
-        target, index = result
-
+        target, index = self.search(entry.key)
         target._keys.insert(index, entry)
 
         if target.is_overflow():
-            self.split(parent, target)
+            self.split(target)
 
-    def split(self, parent: Node, target: Node):
+    def split(self, target: Node):
         mid_point = len(target) // 2
         mid_key = target.keys[mid_point]
             
         if target.is_root:
-            left_node = Node(order = self.order,
-                        is_root = False, is_leaf = target.is_leaf,
-                        key = target._keys[:mid_point], children = target._children[:mid_point+1])
-            right_node = Node(order = self.order, is_leaf = target.is_leaf,
-                         key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
-
-            new_root = Node(order = self.order,
+            new_root = Node(order = self.order, parent = None,
                             is_root = True, is_leaf = False,
-                            key = [mid_key], children = [left_node, right_node])
+                            key = [mid_key], children = [])
+
+            left_node = Node(order = self.order, parent = new_root,
+                             is_root = False, is_leaf = target.is_leaf,
+                             key = target._keys[:mid_point], children = target._children[:mid_point+1])
+            right_node = Node(order = self.order, parent = new_root,
+                              is_root = False, is_leaf = target.is_leaf,
+                              key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
+
+            new_root._children = [left_node, right_node]
+
+            for child in left_node.children: child.parent = left_node
+            for child in right_node.children: child.parent = right_node
 
             self.root = new_root
+        else:
+            left_node = Node(order = self.order, parent = target.parent,
+                             is_root = False, is_leaf = target.is_leaf,
+                             key = target._keys[:mid_point], children = target._children[:mid_point+1])
+            right_node = Node(order = self.order, parent = target.parent,
+                              is_root = False, is_leaf = target.is_leaf,
+                              key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
+            
+            for child in left_node.children: child.parent = left_node
+            for child in right_node.children: child.parent = right_node
+            
+            parent, index = target.parent.search(mid_key.key)
+
+            parent._keys.insert(index, mid_key)
+            parent._children.insert(index, right_node)
+            parent._children.insert(index, left_node)
+            parent._children.pop()
+            
+            if parent.is_overflow():
+                self.split(parent)
     
     @property
     def order(self):
         return self._order
 
 if __name__ == '__main__':
-    tree = BTree(5)
+    tree = BTree(3)
 
-    tree.root._keys = [KeyEntry(2, 10), KeyEntry(3, 30), KeyEntry(17, 30), KeyEntry(22, 30), KeyEntry(31, 30),]
+    for nmbr in range(1, 26):
+        tree.insert(KeyEntry(nmbr, nmbr * 10))
 
-    tree.insert(KeyEntry(7, 70))
-    
     print(tree)
-    
-    print(tree.search(22, exact = True))
 
-
+    print(tree.search(16, exact = True))

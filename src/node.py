@@ -24,7 +24,10 @@ class Node:
         return len(self.keys)
     
     def __repr__(self):
-        return f'#{self.n_node:03} ({self.keys}{'🫚 ' if self.is_root else ''}{'🌿' if self.is_leaf else ''})'
+        return f'({self.keys}{self.determine_sign()})'
+
+    def determine_sign(self):
+        return f'{'🫚 ' if self.is_root else ''}{'🌿' if self.is_leaf else ''}{'' if self.is_root or self.is_leaf else '📦'}'
 
     def search(self, key: int, exact: bool = False):
         if exact:

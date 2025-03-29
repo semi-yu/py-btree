@@ -11,15 +11,15 @@ class Node:
     def __init__(self,
                  order: int, parent = None,
                  is_root: bool = False, is_leaf: bool = True,
-                 key: list[KeyEntry] = list(), children: list = list()):
+                 key: list[KeyEntry] = None, children: list = None):
         self._order: int = order
 
         self.is_root: bool = is_root
         self.is_leaf: bool = is_leaf
         self.parent: Node = parent
 
-        self._keys: list[KeyEntry] = key
-        self._children: list = children
+        self._keys: list[KeyEntry] = key or []
+        self._children: list = children or []
 
     def __len__(self):
         return len(self.keys)

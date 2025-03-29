@@ -75,7 +75,8 @@ if __name__ == '__main__':
 
     tree.insert(KeyEntry(7, 70))
     
-    print(tree.search(7, exact = True))
-
     print(tree)
+    
+    print(tree.search(22, exact = True))
+
 

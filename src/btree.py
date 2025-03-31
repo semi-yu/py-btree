@@ -58,6 +58,13 @@ class BTree:
                               is_root = False, is_leaf = target.is_leaf,
                               key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
 
+            if target.prev: target.prev.next = left_node
+
+            left_node.prev = target.prev
+            left_node.next = right_node
+
+            right_node.prev = left_node
+
             for child in left_node.children: child.parent = left_node
             for child in right_node.children: child.parent = right_node
 
@@ -75,6 +82,13 @@ class BTree:
             right_node = Node(order = self.order, parent = target.parent,
                               is_root = False, is_leaf = target.is_leaf,
                               key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
+
+            if target.prev: target.prev.next = left_node
+
+            left_node.prev = target.prev
+            left_node.next = right_node
+
+            right_node.prev = left_node
             
             for child in left_node.children: child.parent = left_node
             for child in right_node.children: child.parent = right_node

@@ -9,7 +9,7 @@ from entry_result import EntryResult
 
 class Node:
     def __init__(self,
-                 order: int, parent = None,
+                 order: int, parent = None, prev = None, next = None,
                  is_root: bool = False, is_leaf: bool = True,
                  key: list[KeyEntry] = None, children: list = None):
         self._order: int = order

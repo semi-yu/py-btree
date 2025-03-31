@@ -71,8 +71,8 @@ class BTree:
             parent, index = new_root.search(mid_key.key)
 
             parent._keys.insert(index, mid_key)
-            parent._children.insert(index, right_node)
             parent._children.insert(index, left_node)
+            parent._children.insert(index + 1, right_node)
 
             self.root = new_root
         else:
@@ -97,12 +97,12 @@ class BTree:
             parent._children.pop(index)
 
             parent._keys.insert(index, mid_key)
-            parent._children.insert(index, right_node)
             parent._children.insert(index, left_node)
+            parent._children.insert(index+1, right_node)
 
             if parent.is_overflow():
                 self.split(parent)
-    
+
     @property
     def order(self):
         return self._order

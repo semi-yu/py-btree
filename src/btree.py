@@ -65,6 +65,8 @@ class BTree:
 
             right_node.prev = left_node
 
+            if target.next: target.next.prev = right_node
+
             for child in left_node.children: child.parent = left_node
             for child in right_node.children: child.parent = right_node
 
@@ -89,7 +91,9 @@ class BTree:
             left_node.next = right_node
 
             right_node.prev = left_node
-            
+
+            if target.next: target.next.prev = right_node
+
             for child in left_node.children: child.parent = left_node
             for child in right_node.children: child.parent = right_node
             

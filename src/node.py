@@ -31,7 +31,17 @@ class Node:
         return f'({self.keys}{self.determine_sign()})'
 
     def determine_sign(self):
-        return f'{'🫚 ' if self.is_root else ''}{'🌿' if self.is_leaf else ''}{'' if self.is_root or self.is_leaf else '📦'}'
+        sign = str()
+        if self.is_root:
+            sign += '🫚 '
+
+        if self.is_leaf:
+            sign += '🌿'
+
+        if not self.is_root and not self.is_leaf:
+            sign = '📦'
+
+        return sign
 
     def search(self, key: int, exact: bool = False):
         if exact:

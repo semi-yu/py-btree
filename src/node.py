@@ -40,6 +40,8 @@ class Node:
             if index < len(self) \
             and self.keys[index].key != key:
                 return EntryResult()
+
+            if index >= len(self): return EntryResult()
         else:
             index = bisect_right(self.keys, key, key = lambda entry: entry.key)
 

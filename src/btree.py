@@ -22,15 +22,14 @@ class BTree:
     def __repr__(self):
         return traverse(self.root)
 
-    def search(self, key: int, exact: bool = False):
-        current = self.root
+    def search(self, key: int, start: Node = None, exact: bool = False):
+        current = start or self.root
 
         while not current.is_leaf:
             index = bisect_left(current.keys, key, key = lambda entry: entry.key)
 
             if index < len(current) and current.keys[index].key == key:
                 return EntryResult(True, current, index)
-
             current = current.children[index]
 
         return current.search(key, exact)

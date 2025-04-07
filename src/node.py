@@ -3,8 +3,8 @@
 """
 from bisect import bisect_left, bisect_right
 
-from key_entry import KeyEntry
-from entry_result import EntryResult
+from .key_entry import KeyEntry
+from .entry_result import EntryResult
 
 
 class Node:

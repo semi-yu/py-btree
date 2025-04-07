@@ -3,11 +3,11 @@
 """
 from bisect import bisect_left
 
-from traverse import traverse
+from .traverse import traverse
 
-from key_entry import KeyEntry
-from entry_result import EntryResult
-from node import Node
+from .key_entry import KeyEntry
+from .entry_result import EntryResult
+from .node import Node
 
 
 class BTree:

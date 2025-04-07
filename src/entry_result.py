@@ -17,4 +17,4 @@ class EntryResult:
         yield self._index
 
     def __repr__(self):
-        return f'({self._node}, {self._index})' if self._found else '(Not found)'
+        return f'({self._node}, {self._index})'

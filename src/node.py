@@ -48,6 +48,10 @@ class Node:
     def is_overflow(self):
         return len(self) >= self.order
     
+    def is_underflow(self):
+        if self.is_root: return False
+        return len(self) < self.order // 2
+
     @property
     def order(self):
         return self._order

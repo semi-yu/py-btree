@@ -59,3 +59,7 @@ class Node:
     @property
     def children(self):
         return self._children
+
+    @property
+    def is_internal(self):
+        return not self.is_root and not self.is_leaf

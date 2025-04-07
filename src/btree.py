@@ -74,7 +74,7 @@ class BTree:
 
             parent._keys.insert(index, mid_key)
             parent._children.insert(index, left_node)
-            parent._children.insert(index + 1, right_node)
+            parent._children.insert(index+1, right_node)
 
             self.root = new_root
         else:

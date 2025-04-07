@@ -18,6 +18,9 @@ class Node:
         self.is_leaf: bool = is_leaf
         self.parent: Node = parent
 
+        self.prev: Node = prev
+        self.next: Node = next
+
         self._keys: list[KeyEntry] = key or []
         self._children: list = children or []
 

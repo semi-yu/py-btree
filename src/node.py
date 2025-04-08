@@ -11,7 +11,7 @@ class Node:
     def __init__(self,
                  order: int, parent = None, prev = None, next = None,
                  is_root: bool = False, is_leaf: bool = True,
-                 key: list[KeyEntry] = None, children: list = None):
+                 keys: list[KeyEntry] = None, children: list = None):
         self._order: int = order
 
         self.is_root: bool = is_root
@@ -21,7 +21,7 @@ class Node:
         self.prev: Node = prev
         self.next: Node = next
 
-        self._keys: list[KeyEntry] = key or []
+        self._keys: list[KeyEntry] = keys or []
         self._children: list = children or []
 
     def __len__(self):
@@ -40,18 +40,39 @@ class Node:
         return sign
 
     def search(self, key: int, exact: bool = False):
-        if exact:
-            index = bisect_left(self.keys, key, key = lambda entry: entry.key)
+        index = bisect_left(self.keys, key, key = lambda entry: entry.key)
 
+        if exact:
             if index < len(self) \
             and self.keys[index].key != key:
                 return EntryResult()
 
             if index >= len(self): return EntryResult()
-        else:
-            index = bisect_right(self.keys, key, key = lambda entry: entry.key)
 
         return EntryResult(True, self, index)
+
+    def split(self, parent_node):
+        mid_point: int = len(self) // 2
+
+        left_node = Node(self.order, parent = parent_node,
+                         is_root = False, is_leaf = self.is_leaf,
+                         keys = self._keys[:mid_point], children = self._children[:mid_point+1])
+        right_node = Node(self.order, parent = parent_node,
+                          is_root = False, is_leaf = self.is_leaf,
+                          keys = self._keys[mid_point+1:], children = self._children[mid_point+1:])
+
+        if self.prev: self.prev.next = left_node
+
+        left_node.prev = self.prev
+        left_node.next = right_node
+        right_node.prev = left_node
+
+        if self.next: self.next.prev = right_node
+
+        for child in left_node.children: child.parent = left_node
+        for child in right_node.children: child.parent = right_node
+
+        return left_node, right_node
 
     def is_overflow(self):
         return len(self) >= self.order

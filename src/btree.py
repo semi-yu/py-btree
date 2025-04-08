@@ -48,26 +48,8 @@ class BTree:
         if target.is_root:
             new_root = Node(order = self.order, parent = None,
                             is_root = True, is_leaf = False,
-                            key = [], children = [])
-
-            left_node = Node(order = self.order, parent = new_root,
-                             is_root = False, is_leaf = target.is_leaf,
-                             key = target._keys[:mid_point], children = target._children[:mid_point+1])
-            right_node = Node(order = self.order, parent = new_root,
-                              is_root = False, is_leaf = target.is_leaf,
-                              key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
-
-            if target.prev: target.prev.next = left_node
-
-            left_node.prev = target.prev
-            left_node.next = right_node
-
-            right_node.prev = left_node
-
-            if target.next: target.next.prev = right_node
-
-            for child in left_node.children: child.parent = left_node
-            for child in right_node.children: child.parent = right_node
+                            keys = [], children = [])
+            left_node, right_node = target.split(new_root)
 
             parent, index = new_root.search(mid_key.key)
 
@@ -77,25 +59,8 @@ class BTree:
 
             self.root = new_root
         else:
-            left_node = Node(order = self.order, parent = target.parent,
-                             is_root = False, is_leaf = target.is_leaf,
-                             key = target._keys[:mid_point], children = target._children[:mid_point+1])
-            right_node = Node(order = self.order, parent = target.parent,
-                              is_root = False, is_leaf = target.is_leaf,
-                              key = target._keys[mid_point+1:], children = target._children[mid_point+1:])
+            left_node, right_node = target.split(target.parent)
 
-            if target.prev: target.prev.next = left_node
-
-            left_node.prev = target.prev
-            left_node.next = right_node
-
-            right_node.prev = left_node
-
-            if target.next: target.next.prev = right_node
-
-            for child in left_node.children: child.parent = left_node
-            for child in right_node.children: child.parent = right_node
-            
             parent, index = target.parent.search(mid_key.key)
             parent._children.pop(index)
 

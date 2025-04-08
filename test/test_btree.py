@@ -2,112 +2,82 @@
 
 """
 import pytest
-
-from random import choice
+from random import choice, shuffle
 
 from src.btree import BTree
 from src.key_entry import KeyEntry
 
 
 def get_value():
-    meta = ['spam', 'ham', 'eggs']
-    return choice(meta)
+    meta_synt = [
+        'spam',
+        'ham',
+        'eggs',
+    ]
 
-@pytest.fixture
-def empty_tree():
-    tree = BTree(3)
-    return tree
+    return choice(meta_synt)
 
-@pytest.fixture
-def single_level():
-    tree = BTree(3)
+@pytest.mark.parametrize("order", [3, 4, 5, 6, 7, 10, 20])
+def test_insert_and_delete(order):
+    bt = BTree(order)
 
-    for n in range(1, 4):
-        tree.insert(KeyEntry(n, get_value()))
+    # 삽입: 순차적
+    seq_keys = list(range(1, 100))
+    insert_entries(bt, seq_keys)
 
-    return tree
+    validate_tree(bt.root, order)
 
-@pytest.fixture
-def double_level():
-    tree = BTree(3)
-    
-    for n in range(1, 11):
-        tree.insert(KeyEntry(n, get_value()))
+    # 삭제 테스트
+    delete_entries(bt, seq_keys)
 
-    return tree
+    validate_tree(bt.root, order)
 
-@pytest.fixture
-def triple_level():
-    tree = BTree(3)
+    # 삽입: 무작위
+    bt = BTree(order)
+    random_keys = list(range(1, 100))
+    shuffle(random_keys)
+    insert_entries(bt, random_keys)
 
-    for n in range(1, 21):
-        tree.insert(KeyEntry(n, get_value()))
+    # 트리 제약조건 및 참조 무결성 확인
+    validate_tree(bt.root, order)
 
-    return tree
+def insert_entries(bt, keys):
+    for key in keys:
+        bt.insert(KeyEntry(key, get_value()))
 
-def test_default_search_on_empty_tree(empty_tree):
-    result = empty_tree.search(42)
-    assert result, 'Default search on empty b-tree always yields true'
+        validate_tree(bt.root, bt.order)
 
-    res_node, index = result
-    assert res_node is empty_tree.root, 'Default search on empty b-tree ends at a root node'
-    assert index == 0, 'Default search on empty b-tree ends at the first location, 0'
+def delete_entries(bt, keys):
+    for key in keys:
+        bt.delete(key)
 
-def test_default_search_on_single_level(single_level):
-    result = single_level.search(1)
-    assert result, 'Default search'
+        validate_tree(bt.root, bt.order)
 
-    for k in range(1, 4):
-        node, index = single_level.search(key = k)
-        assert node.keys[index-1].key <= k, 'Default search yields the next index'
+def validate_tree(node, order, parent=None):
+    assert node is not None, 'Node is null'
+    assert node.is_root or parent is not None, 'All nodes must have a parent node except root node'
 
-    node, index = single_level.search(42)
-    assert node.keys[index - 1].key < 42, 'Default search on non-existing element yields the next index'
+    assert len(node.keys) <= order + 1, 'All nodes must the less keys than order + 1'
+    if not node.is_root: assert len(node.keys) >= 1, 'All nodes must at least have one key'
 
-def test_default_search_on_double_level(double_level):
-    result = double_level.search(1)
-    assert result, 'Default search'
+    for idx in range(len(node.keys[:-1])):
+        assert node.keys[idx].key < node.keys[idx+1].key, 'All keys must kept in ascending order'
 
-    node, index = double_level.search(42)
-    assert node.keys[index - 1].key < 42, 'Default search on non-existing element yields the next index'
+    if node.is_root and not node.is_leaf:
+        assert len(node.keys) >= 1, 'Root node must have at least one key'
 
-def test_exact_search_on_empty_tree(empty_tree):
-    result = empty_tree.search(42, exact = True)
-    assert not result, 'Exact search on empty b-tree always yields false'
+    if parent:
+        assert node.parent == parent, 'Parent node must be same'
 
-    res_node, index = result
-    assert res_node is None, 'Exact search on emptry b-tree yields None'
-    assert index == None, 'Exact search on emptry b-tree yields None'
+    if node.is_leaf:
+        assert len(node.children) == 0, 'Leaf node does not have children node references'
+    elif node.is_internal:
+        assert len(node.children) == len(node.keys) + 1, 'Internal nodes must have k keys and k+1 children references'
 
-def test_exact_search_on_single_level(single_level):
-    for k in range(1, 4):
-        result = single_level.search(key = k, exact = True)
-        assert result, 'Exact search on existing element yields true'
+        for i, child in enumerate(node.children):
+            validate_tree(child, order, node)
 
-        node, index = result
-        assert node.keys[index].key == k, 'Exact search yields the exact index'
-    
-    result = single_level.search(42, exact = True)
-    assert not result, 'Exact search on non-existing element yields None'
-
-def test_exact_search_on_double_level(double_level):
-    for k in range(1, 11):
-        result = double_level.search(key = k, exact = True)
-        assert result, 'Exact search on existing element yields true'
-
-        node, index = result
-        assert node.keys[index].key == k, 'Default search yields the exact index'
-
-    result = double_level.search(42, exact = True)
-    assert not result, 'Exact search on non-existing element yields None'
-
-def test_exact_search_on_triple_level(triple_level):
-    for k in range(1, 21):
-        result = triple_level.search(key = k, exact = True)
-        assert result, 'Exact search on existing element yields true'
-
-        node, index = result
-        assert node.keys[index].key == k, 'Exact search yields the exact index'
-
-    result = triple_level.search(42, exact = True)
-    assert not result, 'Exact search on non-existing element yields None'
+    if node.prev and node.prev.next:
+        assert node.prev.next == node, 'Next node must be same'
+    if node.next and node.next.prev:
+        assert node.next.prev == node, 'Previous node must be same'

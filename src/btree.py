@@ -106,8 +106,8 @@ class BTree:
             if parent.is_overflow():
                 self.split(parent)
 
-    def delete(self, entry: KeyEntry):
-        target, index = self.search(entry.key, exact = True)
+    def delete(self, key: int):
+        target, index = self.search(key, exact = True)
 
         if target is None: return
 

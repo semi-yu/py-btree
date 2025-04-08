@@ -77,8 +77,7 @@ class Node:
     def merge(self, other, parent_key: KeyEntry):
         merged = Node(
             order = self.order, parent = self.parent,
-            is_root = self.is_root, is_leaf = self.is_leaf
-        )
+            is_root = self.is_root, is_leaf = self.is_leaf)
 
         if self.prev: self.prev.next = merged
         merged.prev = self.prev

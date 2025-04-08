@@ -74,6 +74,25 @@ class Node:
 
         return left_node, right_node
 
+    def merge(self, other, parent_key: KeyEntry):
+        merged = Node(
+            order = self.order, parent = self.parent,
+            is_root = self.is_root, is_leaf = self.is_leaf
+        )
+
+        if self.prev: self.prev.next = merged
+        merged.prev = self.prev
+        merged.next = other.next
+        if other.next: other.next.prev = merged
+
+        merged._keys = self.keys + [parent_key] + other.keys
+        merged._children = self.children + other.children
+
+        for child in merged._children:
+            child.parent = merged
+
+        return merged
+
     def is_overflow(self):
         return len(self) >= self.order
     

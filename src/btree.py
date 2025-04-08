@@ -127,37 +127,17 @@ class BTree:
             parent._keys[parent_index] = source._keys.pop(-1)
 
     def merge(self, destination: Node, source: Node) -> Node:
-        merged = Node(
-            order = self.order, parent = destination.parent,
-            is_root = destination.is_root, is_leaf = destination.is_leaf
-        )
-
         if destination.next is source:
             parent, parent_index = destination.parent.search(source._keys[0].key)
             parent_index -= 1
             parent_key = parent._keys[parent_index]
 
-            if destination.prev: destination.prev.next = merged
-            merged.prev = destination.prev
-            merged.next = source.next
-            if source.next: source.next.prev = merged
-
-            merged._keys = destination._keys + [parent_key] + source._keys
-            merged._children = destination._children + source._children
+            merged = destination.merge(source, parent_key)
         elif destination.prev is source:
             parent, parent_index = destination.parent.search(source._keys[-1].key)
             parent_key = parent._keys[parent_index]
 
-            if source.prev: source.prev.next = merged
-            merged.prev = source.prev
-            merged.next = destination.next
-            if destination.next: destination.next.prev = merged
-
-            merged._keys = source._keys + [parent_key] + destination._keys
-            merged._children = source._children + destination._children
-
-        for child in merged._children:
-            child.parent = merged
+            merged = source.merge(destination, parent_key)
 
         parent._keys.pop(parent_index)
         parent._children.pop(parent_index)

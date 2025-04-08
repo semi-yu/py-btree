@@ -68,8 +68,8 @@ class BTree:
             parent._children.insert(index, left_node)
             parent._children.insert(index+1, right_node)
 
-            if parent.is_overflow():
-                self.split(parent)
+        if parent.is_overflow():
+            self.split(parent)
 
     def delete(self, key: int):
         target, index = self.search(key, exact = True)

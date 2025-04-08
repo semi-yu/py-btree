@@ -47,8 +47,8 @@ class BTree:
             
         if target.is_root:
             new_root = Node(order = self.order, parent = None,
-                            is_root = True, is_leaf = False,
-                            keys = [], children = [])
+                            is_root = True, is_leaf = False)
+
             left_node, right_node = target.split(new_root)
 
             parent, index = new_root.search(mid_key.key)

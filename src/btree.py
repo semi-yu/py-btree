@@ -113,30 +113,33 @@ class BTree:
         else: # target.next and target.next.parent is target.parent
             return target.next
 
+    def parent_index_and_key(self, destination: Node, source: Node) -> tuple[Node, int, KeyEntry]:
+        if destination.next is source:
+            parent, index = destination.parent.search(source._keys[0].key)
+            index -= 1
+        else: # destination.prev is source
+            parent, index = destination.parent.search(source._keys[-1].key)
+
+        key = parent._keys[index]
+
+        return parent, index, key
+
     def rotate(self, destination: Node, source: Node):
+        parent, parent_index, parent_key = self.parent_index_and_key(destination, source)
+
         if destination.next is source: # counter-clockwise rotation
-            parent, parent_index = destination.parent.search(source._keys[0].key)
-            parent_index -= 1
-
-            destination._keys.insert(len(destination._keys), parent._keys[parent_index+0])
-            parent._keys[parent_index+0] = source._keys.pop(0)
+            destination._keys.insert(len(destination._keys), parent_key)
+            parent._keys[parent_index] = source._keys.pop(0)
         elif destination.prev is source:
-            parent, parent_index = destination.parent.search(source._keys[-1].key)
-
-            destination._keys.insert(0, parent._keys[parent_index])
+            destination._keys.insert(0, parent_key)
             parent._keys[parent_index] = source._keys.pop(-1)
 
     def merge(self, destination: Node, source: Node) -> Node:
-        if destination.next is source:
-            parent, parent_index = destination.parent.search(source._keys[0].key)
-            parent_index -= 1
-            parent_key = parent._keys[parent_index]
+        parent, parent_index, parent_key = self.parent_index_and_key(destination, source)
 
+        if destination.next is source:
             merged = destination.merge(source, parent_key)
         elif destination.prev is source:
-            parent, parent_index = destination.parent.search(source._keys[-1].key)
-            parent_key = parent._keys[parent_index]
-
             merged = source.merge(destination, parent_key)
 
         parent._keys.pop(parent_index)

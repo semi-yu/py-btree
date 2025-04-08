@@ -44,29 +44,26 @@ class BTree:
     def split(self, target: Node):
         mid_point = len(target) // 2
         mid_key = target.keys[mid_point]
-            
+
+        # generate new root
         if target.is_root:
-            new_root = Node(order = self.order, parent = None,
+            parent = Node(order = self.order, parent = None,
                             is_root = True, is_leaf = False)
-
-            left_node, right_node = target.split(new_root)
-
-            parent, index = new_root.search(mid_key.key)
-
-            parent._keys.insert(index, mid_key)
-            parent._children.insert(index, left_node)
-            parent._children.insert(index+1, right_node)
-
-            self.root = new_root
+        # inherit original parent
         else:
-            left_node, right_node = target.split(target.parent)
+            parent = target.parent
 
-            parent, index = target.parent.search(mid_key.key)
+        left_node, right_node = target.split(parent)
+        _, index = parent.search(mid_key.key)
+
+        if target.is_root:
+            self.root = parent
+        else:
             parent._children.pop(index)
 
-            parent._keys.insert(index, mid_key)
-            parent._children.insert(index, left_node)
-            parent._children.insert(index+1, right_node)
+        parent._keys.insert(index, mid_key)
+        parent._children.insert(index, left_node)
+        parent._children.insert(index+1, right_node)
 
         if parent.is_overflow():
             self.split(parent)

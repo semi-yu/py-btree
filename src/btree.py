@@ -81,7 +81,7 @@ class BTree:
             target._keys.pop(index)
             node = target
         else:
-            node = self.borrow_from_child(target, index)
+            node = self.trawl(target, index)
 
         if node.is_underflow():
             return self.balance(node)
@@ -153,7 +153,7 @@ class BTree:
 
         return merged.parent
 
-    def borrow_from_child(self, target: Node, index: int) -> Node:
+    def trawl(self, target: Node, index: int) -> Node:
         # get smallest from right
         node = target._children[index + 1]
         while not node.is_leaf:

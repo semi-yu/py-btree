@@ -31,16 +31,16 @@ def test_init_as_root_node():
 
 def test_determine_sign():
     node = Node(order = 4)
-    assert node.determine_sign() == '🌿', 'Without given, A node is a leaf node'
+    assert node.symbol() == '🌿', 'Without given, A node is a leaf node'
 
     node = Node(order = 4, is_root = True)
-    assert node.determine_sign() == '🫚 🌿', 'A root and a leaf node is possible'
+    assert node.symbol() == '🫚 🌿', 'A root and a leaf node is possible'
 
     node = Node(order = 4, is_leaf = False)
-    assert node.determine_sign() == '📦', 'A node that is neither root nor leaf, is a internal node'
+    assert node.symbol() == '📦', 'A node that is neither root nor leaf, is a internal node'
 
     node = Node(order = 4, is_root = True, is_leaf = False)
-    assert node.determine_sign() == '🫚 ', 'A Node can be only a root node'
+    assert node.symbol() == '🫚 ', 'A Node can be only a root node'
 
 def test_search_on_empty_node_default():
     node = Node(order = 4)

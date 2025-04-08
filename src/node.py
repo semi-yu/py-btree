@@ -28,18 +28,14 @@ class Node:
         return len(self.keys)
     
     def __repr__(self):
-        return f'({self.keys}{self.determine_sign()})'
+        return f'({self.keys}{self.symbol()})'
 
-    def determine_sign(self):
+    def symbol(self):
         sign = str()
-        if self.is_root:
-            sign += '🫚 '
+        if self.is_root: sign += '🫚 '
+        if self.is_leaf: sign += '🌿'
 
-        if self.is_leaf:
-            sign += '🌿'
-
-        if not self.is_root and not self.is_leaf:
-            sign = '📦'
+        if not self.is_root and not self.is_leaf: sign = '📦'
 
         return sign
 

@@ -94,7 +94,7 @@ class Node:
 
     def is_overflow(self):
         return len(self) >= self.order
-    
+
     def is_underflow(self):
         if self.is_root: return False
         return len(self) < self.order // 2
@@ -106,7 +106,7 @@ class Node:
     @property
     def keys(self):
         return self._keys
-    
+
     @property
     def children(self):
         return self._children

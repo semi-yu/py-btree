@@ -33,7 +33,7 @@ class BTree:
             current = current.children[index]
 
         return current.search(key, exact)
-    
+
     def insert(self, entry: KeyEntry):
         target, index = self.search(entry.key)
         target._keys.insert(index, entry)

@@ -75,13 +75,16 @@ class BTree:
 
         # remove and rebalance
         if target.is_leaf:
-            target._keys.pop(index)
-            node = target
+            node = self.remove(target, index)
         else:
             node = self.trawl(target, index)
 
         if node.is_underflow():
             return self.balance(node)
+
+    def remove(self, target: Node, index: int):
+        target._keys.pop(index)
+        return target
 
     def balance(self, target: Node):
         sibling = self.get_sibling(target)

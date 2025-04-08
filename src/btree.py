@@ -217,5 +217,5 @@ class BTree:
         return node
 
     @property
-    def order(self):
+    def order(self) -> int:
         return self._order

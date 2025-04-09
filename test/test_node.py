@@ -3,8 +3,8 @@
 """
 import pytest
 
-from src.node import Node
-from src.entry_result import EntryResult
+from src.data_structure.entry_result import EntryResult
+from src.data_structure.node import Node
 
 def test_init_as_default_node():
     node = Node(

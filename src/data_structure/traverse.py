@@ -3,6 +3,7 @@
 """
 from .node import Node
 
+
 def traverse(node: Node, level: int = 0):
     ret = '\t' * level + f'{str(node)}' + '\n'
     

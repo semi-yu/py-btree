@@ -3,16 +3,19 @@
 """
 from bisect import bisect_left
 
-from .traverse import traverse
-
-from .key_entry import KeyEntry
 from .entry_result import EntryResult
+from .key_entry import KeyEntry
 from .node import Node
+from .traverse import traverse
 
 
 class BTree:
-    def __init__(self,
-                 order: int):
+    """
+        B-Tree data structure class.
+
+        
+    """
+    def __init__(self, order: int):
         self._order = order
 
         self.root = Node(
@@ -110,7 +113,7 @@ class BTree:
     def get_sibling(self, target: Node) -> Node:
         if target.prev and target.prev.parent is target.parent:
             return target.prev
-        else: # target.next and target.next.parent is target.parent
+        elif target.next and target.next.parent is target.parent:
             return target.next
 
     def parent_index_and_key(self, destination: Node, source: Node) -> tuple[Node, int, KeyEntry]:

@@ -4,8 +4,8 @@
 import pytest
 from random import choice, shuffle
 
-from src.btree import BTree
-from src.key_entry import KeyEntry
+from src.data_structure.btree import BTree
+from src.data_structure.key_entry import KeyEntry
 
 
 def get_value():

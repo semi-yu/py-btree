@@ -66,6 +66,7 @@ class Node:
         left_node.prev = self.prev
         left_node.next = right_node
         right_node.prev = left_node
+        right_node.next = self.next
 
         if self.next: self.next.prev = right_node
 

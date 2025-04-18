@@ -41,6 +41,30 @@ def test_insert_and_delete(order):
     # 트리 제약조건 및 참조 무결성 확인
     validate_tree(bt.root, order)
 
+@pytest.mark.parametrize("order", [3, 4, 5, 6, 7, 10, 20])
+def test_node_linkage(order):
+    bt = BTree(order)
+
+    for key in range(1, 101):
+        bt.insert(KeyEntry(key, get_value()))
+
+    # traverse minimum
+    most_left = bt.root
+
+    while most_left:
+        current = most_left
+
+        while current:
+            if current.prev: assert current.prev.next is current
+            if current.next: assert current.next.prev is current
+
+            current = current.next
+
+        if most_left.is_internal:
+            most_left = most_left.children[0]
+        else:
+            break
+
 def insert_entries(bt, keys):
     for key in keys:
         bt.insert(KeyEntry(key, get_value()))
